@@ -1,0 +1,118 @@
+#
+# ~/.bashrc
+#
+
+alias p='python'
+alias v='nvim'
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+date
+echo
+#fortune | cowsay -f $(ls /usr/share/cows/ | shuf -n1)
+echo
+
+if [ -f /etc/bash_completion ]; then
+	        . /etc/bash_completion
+	fi
+
+if [ -f $HOME/.git-completion.bash ]; then
+	  source $HOME/.git-completion.bash
+  fi
+
+complete -cf sudo
+complete -cf man
+
+shopt -s cdspell
+shopt -s checkwinsize
+shopt -s cmdhist
+shopt -s dotglob
+shopt -s expand_aliases
+shopt -s extglob
+shopt -s histappend
+shopt -s hostcomplete
+shopt -s nocaseglob
+
+export HISTSIZE=10000
+export HISTFILESIZE=${HISTSIZE}
+export HISTCONTROL=ignoreboth
+
+
+export GREP_COLOR="1;33"
+alias grep='grep --color=auto'
+alias ls='ls --group-directories-first --time-style=+"%d.%m.%Y %H:%M" --color=auto -F'
+alias ll='ls -lh --group-directories-first --time-style=+"%d.%m.%Y %H:%M" --color=auto -F'
+alias la='ls -lha --group-directories-first --time-style=+"%d.%m.%Y %H:%M" --color=auto -F'
+alias lr='ls -lhrt --group-directories-first --time-style=+"%d.%m.%Y %H:%M" --color=auto -F'
+alias cp="cp -i"                          # confirm before overwriting something
+alias mv="mv -i"              # confirm before overwriting something
+alias rm="rm -I"              # confirm before removing more than 3 files
+alias df='df -h'                          # human-readable sizes
+#alias free='free -m'                      # show sizes in MB
+alias ducks='du -cks * |sort -rn |head -11' # disk hog
+alias sps='ps aux | grep -v grep | grep'  # search process
+
+# ex - archive extractor
+# usage: ex <file>
+ex ()
+{
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1   ;;
+      *.tar.gz)    tar xzf $1   ;;
+      *.tar.xz)    tar xJf $1   ;;
+      *.bz2)       bunzip2 $1   ;;
+      *.rar)       unrar x $1     ;;
+      *.gz)        gunzip $1    ;;
+      *.tar)       tar xf $1    ;;
+      *.tbz2)      tar xjf $1   ;;
+      *.tgz)       tar xzf $1   ;;
+      *.zip)       unzip $1     ;;
+      *.Z)         uncompress $1;;
+      *.7z)        7z x $1      ;;
+      *)           echo "'$1' cannot be extracted via ex()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[m\] \[\e[1;32m\]\$ \[\e[m\]\[\e[1;37m\] '
+
+export LESS_TERMCAP_mb=$'\E[01;31m'
+export LESS_TERMCAP_md=$'\E[01;31m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export LESS_TERMCAP_so=$'\E[01;44;33m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_us=$'\E[01;32m'
+
+# when connecting to SSH, start or reattach screen session
+if [ -n "$SSH_CONNECTION" ] && [ -z "$SCREEN_EXIST" ]; then
+    export SCREEN_EXIST=1
+    screen -DR
+    fi
+
+#search from CLI
+function google { IFS='+'; elinks http://www.google.com/search\?q="$*";}
+
+# # translate bonjour fr zh; par défault de l'anglais vers le français
+# translate() {
+# wget -qO- "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q=$1&langpair=${2:-en}|${3:-fr}" | sed -E -n 's/[[:alnum:]": {}]+"translatedText":"([^"]+)".*/\1/p';
+# echo ''
+# return 0;
+# }
+translate() {
+    wget -U "Mozilla/5.0" -qO - "https://translate.google.com/translate_a/single?client=t&sl=${3:-auto}&tl=${2:-en}&dt=t&q=$1" | cut -d'"' -f2;
+}
+
+# Find a file with a pattern in name:
+function ff()
+{ find . -type f -iname '*'$*'*' -ls ; }
+# Find a file with pattern $1 in name and Execute $2 on it:
+function fe()
+{ find . -type f -iname '*'$1'*' -exec "${2:-file}" {} \;  ; }
+
+# Tex related function
+function greptex()
+{ grep -i "$*" -n --color=auto {,**/}*.tex ; }
+
