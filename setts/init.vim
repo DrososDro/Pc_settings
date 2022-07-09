@@ -45,7 +45,8 @@ set fileencoding=utf-8
 set shortmess+=c
 set spelllang=en_us
 set complete+=kspell
-set completeopt=menuone,longest
+"set completeopt=menuone,longest
+autocmd FileType python setlocal completeopt-=preview
 filetype plugin indent on
 "let g:polyglot_disabled = ['autoindent']
 
@@ -61,15 +62,17 @@ Plug 'jistr/vim-nerdtree-tabs'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'jiangmiao/auto-pairs'
 Plug 'dense-analysis/ale'
-Plug 'majutsushi/tagbar'
 Plug 'vim-scripts/indentpython.vim'
+Plug 'majutsushi/tagbar'
 Plug 'lepture/vim-jinja'
 Plug 'pangloss/vim-javascript'
 Plug 'alvan/vim-closetag'
 Plug 'maxmellon/vim-jsx-pretty'
-Plug 'davidhalter/jedi-vim'
+"Plug 'davidhalter/jedi-vim'
 Plug 'sheerun/vim-polyglot'
-Plug 'vim-scripts/AutoComplPop'
+"Plug 'vim-scripts/AutoComplPop'
+"Plug 'Valloric/YouCompleteMe'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
 "file browser
@@ -110,8 +113,18 @@ nmap <C-l> <C-w>l
 " this need to install from root not from sudoer
 let g:ale_linters = {'python':['flake8', 'pydocstyle', 'bandit','mypy'],'html': ['htmlhint'],'css': ['stylelint']}
 let g:ale_fixers = {'python':["black", "isort"],'html': ['prettier'],'css': ['stylelint']}
-let g:ale_fix_on_save = 1 
+let g:ale_fix_on_save = 1
 let g:ale_lint_on_insert_leave = 1
 autocmd FileType python setlocal indentkeys-=<:>
 autocmd FileType html,css EmmetInstall
 let g:user_emmet_leader_key=","
+source ~/AppData/Local/nvim/coc-settings.json
+function! s:check_back_space() abort
+  let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <Tab>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<Tab>" :
+      \ coc#refresh()
