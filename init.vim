@@ -124,8 +124,6 @@ let g:lightline = { 'colorscheme': 'onedark' }
 "this close tags on this files
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml'
 
-lua require("/lua/plugins/config")
-
 
 " this remap the coc to tab and space
 function! s:check_back_space() abort
